@@ -78,7 +78,9 @@ potentials.guide_decay="quadratic" \
 potentials.substrate=HEC \
 inference.num_designs=10
 ```
-
+En las tres variantes usamos los potenciales:
+- ```substrate_contacts```
+- ```monomer_ROG```
 
 ### Aplicar *inverse folding* para obtener la secuencia de aminoácidos
 
