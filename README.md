@@ -1,5 +1,5 @@
 # Diseño de nuevas enzimas mediante scaffolding del centro activo de enzimas de estructura conocida
-El objetivo principal de este trabajo es, partiendo del modelo [RF*diffusion*](https://github.com/RosettaCommons/RFdiffusion), diseñar nuevas enzimas partiendo de estructuras ya conocidas.
+El objetivo principal de este trabajo es, utilizando el modelo [RF*diffusion*](https://github.com/RosettaCommons/RFdiffusion), diseñar nuevas enzimas a partir de estructuras ya conocidas.
 Para ello, hemos seguido el siguiente procedimiento:
 - [Generar el backbone de la nueva enzima](#generar-el-backbone-de-la-nueva-enzima):
   - [Definir el motivo a partir del sustrato](#definir-el-motivo-a-partir-del-sustrato).
