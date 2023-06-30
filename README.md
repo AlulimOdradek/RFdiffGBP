@@ -17,7 +17,68 @@ Sobre este entorno hemos añadido el código ```mytools/utils.py``` y hemos modi
 
 ### Definir el motivo a partir del sustrato.
 
+Para definir el motivo en torno al que queremos generar la nueva proteína, consideraremos los residuos cuya distancia al sustrato sea inferior a una longitud propuesta. Definimos la distancia entre residuo y sustrato como la mínima distancia de los átomos del residuo (capturados en el
+PDB) y los átomos del sustrato.
+
+Para ello usamos el código:
+```python
+from rfdiffusion.inference import utils as iu
+from mytools import utils as myu
+
+# Seleccionar motivo
+# dist < 5A
+pdb = iu. parse_pdb ("../TFM/RFdiffusion/inputs/6vdz.pdb", parse_hetatom = True )
+substrateName = ' HEC'
+chain = 'A'
+distMotif = 5.0
+CA = True
+
+myu.motif_substr(pdb,substrateName,chain,distMotif,CA)
+```
+Para una distancia de 5&#x212b;, el motivo estaría definido por los residuos 
+[191, 194, 195, 198, 231, 234, 238, 266, 268, 269, 271, 274, 277, 278, 281, 282, 306, 309, 310, 313, 316, 317, 318, 319, 320].
+
 ### Aplicar *motif-scaffolding* al motivo para generar la estructura de la proteína.
+
+Para realizar la difusión inversa sobre el pdb ```6vdz``` aplicamos los comandos:
+
+- Variante 1
+```
+scripts/run_inference.py \
+inference.output_prefix=../TFM/RFdiffusion/outputs/6vdz_M/6vdz_M0_5.0A \
+inference.input_pdb=../TFM/RFdiffusion/inputs/6vdz.pdb \
+'contigmap.contigs=[173/A191-191/2/A194-195/2/A198-198/32/A231-231/2/A234-234/3/A238-238/27/A266-266/1/A268-269/1/A271-271/2/A274-274/2/A277-278/2/A281-282/23/A306-306/2/A309-310/2/A313-313/2/A316-320]' \
+potentials.guide_scale=1 \
+'potentials.guiding_potentials=["type:substrate_contacts,s:1,r_0:8,rep_r_0:5.0,rep_s:2,rep_r_min:1","type:monomer_ROG,weight:1,min_dist:5"]' \
+potentials.substrate=HEC \
+inference.num_designs=10
+```
+
+- Variante 2:
+```
+scripts/run_inference.py \
+inference.output_prefix=../TFM/RFdiffusion/outputs/6vdz_M/6vdz_M1_5.0A \
+inference.input_pdb=../TFM/RFdiffusion/inputs/6vdz.pdb \
+'contigmap.contigs=[173/A191-191/2/A194-195/2/A198-198/32/A231-231/2/A234-234/3/A238-238/27/A266-266/1/A268-269/1/A271-271/2/A274-274/2/A277-278/2/A281-282/23/A306-306/2/A309-310/2/A313-313/2/A316-320]' \
+potentials.guide_scale=2 \
+potentials.guide_decay="quadratic" \
+'potentials.guiding_potentials=["type:substrate_contacts,s:1,r_0:8,rep_r_0:5.0,rep_s:2,rep_r_min:1","type:monomer_ROG,weight:1,min_dist:5"]' \
+potentials.substrate=HEC \
+inference.num_designs=10
+```
+- Variante 3
+```
+scripts/run_inference.py \
+inference.output_prefix=../TFM/RFdiffusion/outputs/6vdz_M/6vdz_M2_5.0A \
+inference.input_pdb=../TFM/RFdiffusion/inputs/6vdz.pdb \
+'contigmap.contigs=[173/A191-191/2/A194-195/2/A198-198/32/A231-231/2/A234-234/3/A238-238/27/A266-266/1/A268-269/1/A271-271/2/A274-274/2/A277-278/2/A281-282/23/A306-306/2/A309-310/2/A313-313/2/A316-320]' \
+potentials.guide_scale=1 \
+potentials.guide_decay="quadratic" \
+'potentials.guiding_potentials=["type:substrate_contacts,s:1,r_0:8,rep_r_0:5.0,rep_s:2,rep_r_min:1","type:monomer_ROG,weight:1,min_dist:5"]' \
+potentials.substrate=HEC \
+inference.num_designs=10
+```
+
 
 ### Aplicar *inverse folding* para obtener la secuencia de aminoácidos
 
