@@ -155,6 +155,85 @@ El objetivo es encontrar una estructura de alto pLDDT (superior a 90) que se aju
 
 ## Resultados 6VDZ
 
+Pretendemos encontrar una estructura en la que motivo (en rojo) y sustrato se ajusten de manera similar al wild-type:
+
+<p align="center">
+  <img src="./img/6vdz_grande_surface.png" alt="alt text" width="700px" align="middle"/>
+</p>
+
+La mejor solución la obtenemos para la secuencia:
+
+```
+MTYEEILALVETFDELLRPILRELIEIAKKTGTEAEVLEILLKLYELLKKAEEKGLLAELSLALLLRFLALTGRFAPRLEAFFATLSPEAQEIFKEIDELLEEAKEKGLTELVSLIIAAL
+AISCALLLFKKDCADDPSLPEDLAEFQALAVEMLRAMWALRERYAAAPEAVLLHSGFMVLALLATIYIKIIIKQLEKGNIEKAKENLKLLIEVMELCTELLRAEAALAAEVAAADPALAA
+VVAAIRAEMAGLDWPVHKALIENLAKLKEELKKNREKFEEEIKKLEKALAATYAAHPAVCGHF
+```
+Esta solución presenta un valor medio de pLDDT de 94.36 y el PDB generado por *AlphaFold2* nos proporciona un bolsillo a priori aceptable, al menos cuando no se utiliza ```amber``` para el refinamiento de la estructura:
+
+<p align="center">
+  <img src="./img/6vdz_M0_5_0A_1_s9_u_r1_surface.png" alt="alt text" width="700px" align="middle"/>
+</p>
+
 ## Resultados 7KQU
 
+En el cristal se capturaron dos grupos hemo, uno en cada cadena, más dos moléculas de 3-fluorotirosina y dos moléculas de peróxido de oxígeno, además
+de un grupo BTB en torno al cual interact´uan ambas cadenas.
 
+Se trata de un dímero con estructura cíclica C2. Lo comprobamos usando el código:
+
+```python
+import numpy as np
+from scipy.spatial.transform import Rotation as rot
+
+from rfdiffusion.inference import utils as iu
+
+from mytools import utils as myu
+
+pdb = iu.parse_pdb("../TFM/RFdiffusion/inputs/7kqu.pdb", parse_hetatom=True)
+
+# Obtenemos los índices de las cadenas A y B
+pdb_index_A = [pdb['pdb_idx'].index(d) for d in pdb['pdb_idx'] if d[0] == 'A'] 
+pdb_index_B = [pdb['pdb_idx'].index(d) for d in pdb['pdb_idx'] if d[0] == 'B'] 
+
+# Obtenemos las coordenadas de los CA de ambas cadenas
+CA_xyz_A = pdb['xyz'][pdb_index_A,1]
+CA_xyz_B = pdb['xyz'][pdb_index_B,1]
+
+m1 = np.matrix(CA_xyz_A).T
+m2 = np.matrix(CA_xyz_B).T
+
+# Aplicamos a las matrices la funcion sup() que, entre otras cosas, nos devuelve la matriz de giro
+s = myu.sup(m1,m2)
+
+# Obtenemos el ángulo de rotación 
+r = rot.from_matrix(s[2])
+r.magnitude() 
+```
+
+Obtenemos un ángulo de giro de $3.1354$ radianes, muy próximo a $\pi$.
+
+Utilizamos el potencial ```olig contacts```e ```inference.simetry=’C2’``` para generar el dímero.
+
+Para definir el motivo hemos usado dos segmentos:
+
+- Seleccionamos los residuos que están a una distancia inferior a 5.0 5&#x212b; del sustrato BTB:  
+  [A81, A85, A148, A149, A151, A152, A232, A233, A234, B81, B85, B148, B151, B152, B232, B233, B234].  
+  Las distancias inferiores evaluadas provocaban la superposición de la proteína y el BTB.
+- Y los residuos a una distancia inferior a 3.0 5&#x212b;, 3.5 5&#x212b; y 4.0 5&#x212b; (hemos probado los tres casos) del grupo de reactivos HEM, YOF y PEO. No hemos usado la distancia de 5.05&#x212b; por que incluir´ıa 76 aminoácidos, superior al 10% de residuos de la proteína.
+
+Para distancias inferiores a 4.0 5&#x212b; en el segundo segmento, hemos aplicado el comando:
+```
+python ./scripts/run_inference.py \
+inference.num_designs=10 \
+inference.output_prefix=../TFM/RFdiffusion/outputs/7kqu/7kqu356 \
+inference.symmetry="C2" \
+'potentials.guiding_potentials=["type:olig_contacts,weight_intra:1,weight_inter:0.06"]' \
+potentials.olig_intra_all=True \
+potentials.olig_inter_all=True \
+potentials.guide_scale=2 \
+potentials.guide_decay="quadratic" \
+inference.input_pdb=../TFM/RFdiffusion/inputs/7kqu.pdb \
+'contigmap.contigs=[75/A81-81/2/A84-85/2/A88-88/6/A95-95/34/A130-130/2/A133-133/7/A141-141/4/A146-146/1/A148-149/1/A151-152/3/A156-159/4/A164-164/7/A172-172/23/A196-196/2/A199-200/2/A203-204/4/A209-212/17/A230-230/1/A232-234/73/0 75/B81-81/2/B84-85/2/B88-88/6/B95-95/34/B130-130/2/B133-133/7/B141-141/4/B146-146/1/B148-149/1/B151-152/3/B156-159/4/B164-164/7/B172-172/23/B196-196/3/B200-200/2/B203-204/4/B209-212/17/B230-230/1/B232-234/73/0]'
+```
+
+Con esta configuración no obtenemos los resultados que buscábamos: al alinear las infraestructuras diseñadas con el wild-type en torno al motivo, conseguimos alguna buena disposición de la proteína en torno al BTB, pero no así en torno al grupo HEM, YOF y PEO. De hecho obtenemos distancias mínimas entre la proteína y el grupo que no superan los 0.8 5&#x212b;.
