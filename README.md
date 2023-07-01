@@ -148,7 +148,7 @@ Por defecto el comando genera 5 estructuras para cada secuencia proporcionada en
 
 En primera instancia filtramos las múltiples estructuras generadas filtrando los datos obtenidos mediante la función ```summ_pdbs()```:
 - ```rmds``` < 1.0
-- ```mind``` > 1.7: Mínima distancia entre los los residuos del motivo (en este caso usamos todos los átomos) en la enzima diseñada, una vez superpuesto al motivo en el wild-type, y el sustrato. Con esto pretendemos imponer que no haya solapamiento entre motivo y sustrato.
+- ```mind``` > 1.7: Mínima distancia entre los los residuos del motivo en la enzima diseñada, una vez superpuesto al motivo en el wild-type, y el sustrato. Con esto pretendemos imponer que no haya solapamiento entre motivo y sustrato.
 - ```plddt_mean```> 90. AlphaFold estima una puntuación de la confianza por residuo en una escala de 0 a 100 a la que denomina pLDDT. AlphaFold almacena este dato en el campo B-factor del PDB que genera.
 
 El objetivo es encontrar una estructura de alto pLDDT (superior a 90) que se ajuste al bolsillo de manera similar a como ocurre en el wild-type de forma que pueda acoger al substrato.
