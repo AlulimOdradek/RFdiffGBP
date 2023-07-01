@@ -236,4 +236,9 @@ inference.input_pdb=../TFM/RFdiffusion/inputs/7kqu.pdb \
 'contigmap.contigs=[75/A81-81/2/A84-85/2/A88-88/6/A95-95/34/A130-130/2/A133-133/7/A141-141/4/A146-146/1/A148-149/1/A151-152/3/A156-159/4/A164-164/7/A172-172/23/A196-196/2/A199-200/2/A203-204/4/A209-212/17/A230-230/1/A232-234/73/0 75/B81-81/2/B84-85/2/B88-88/6/B95-95/34/B130-130/2/B133-133/7/B141-141/4/B146-146/1/B148-149/1/B151-152/3/B156-159/4/B164-164/7/B172-172/23/B196-196/3/B200-200/2/B203-204/4/B209-212/17/B230-230/1/B232-234/73/0]'
 ```
 
-Con esta configuración no obtenemos los resultados que buscábamos: al alinear las infraestructuras diseñadas con el wild-type en torno al motivo, conseguimos alguna buena disposición de la proteína en torno al BTB, pero no así en torno al grupo HEM, YOF y PEO. De hecho obtenemos distancias mínimas entre la proteína y el grupo que no superan los 0.8 5&#x212b;.
+Con esta configuración no obtenemos los resultados que buscábamos: al alinear las infraestructuras diseñadas con el wild-type en torno al motivo, conseguimos alguna buena disposición de la proteína en torno al BTB, pero no así en torno al grupo HEM, YOF y PEO. De hecho obtenemos distancias mínimas entre la proteína y el grupo que no superan los 0.8 5&#x212b;:
+
+<p align="center">
+  <img src="./img/7kqu_356_1_BTB.png" alt="alt text" width="450px" align="middle"/>
+  <img src="./img/7kqu_356_1_HEM.png" alt="alt text" width="450px" align="middle"/>
+</p>
