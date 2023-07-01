@@ -140,7 +140,13 @@ Usamos el parámetro ```--amber``` para el refinamiento de la estructura y ```--
 ```
 colabfold_batch --templates --amber ./AF2/inputs/6vdz/motif_5.0A_4/6vdz_Px_5.0A.fa ./AF2/outputs/6vdz/motif_5.0A_4_templates/
 ```
+Por defecto el comando genera 5 estructuras para cada secuencia proporcionada en el fichero ```.fa```.
 
 ### Analizar la calidad del *bolsillo* generado en torno al sustrato
 
-Filtramos 
+En primera instancia filtramos las múltiples estructuras generadas filtrando los datos obtenidos mediante la función ```summ_pdbs()```:
+- ```rmds``` < 1.0
+- ```mind``` > 1.7: Mínima distancia entre los los residuos del motivo (en este caso usamos todos los átomos) en la enzima diseñada, una vez superpuesto al motivo en el wild-type, y el sustrato. Con esto pretendemos imponer que no haya solapamiento entre motivo y sustrato.
+- ```plddt_mean```> 90. AlphaFold estima una puntuación de la confianza por residuo en una escala de 0 a 100 a la que denomina pLDDT. AlphaFold almacena este dato en el campo B-factor del PDB que genera.
+
+El objetivo es encontrar una estructura de alto pLDDT (superior a 90) que se ajuste al bolsillo de manera similar a como ocurre en el wild-type de forma que pueda acoger al substrato.
