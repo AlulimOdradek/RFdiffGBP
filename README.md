@@ -242,3 +242,5 @@ Con esta configuración no obtenemos los resultados que buscábamos: al alinear 
   <img src="./img/7kqu_356_1_BTB.png" alt="alt text" width="400px" align="middle"/>
   <img src="./img/7kqu_356_1_HEM.png" alt="alt text" width="400px" align="middle"/>
 </p>
+
+No es posible aplicar simultáneamente los potenciales ```olig_contacts``` y ```substrate_contacts```. Esta hecho puede ser la causa de que no se generen adecuadamente los bolsillos de los sustratos.
