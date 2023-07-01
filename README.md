@@ -239,6 +239,6 @@ inference.input_pdb=../TFM/RFdiffusion/inputs/7kqu.pdb \
 Con esta configuración no obtenemos los resultados que buscábamos: al alinear las infraestructuras diseñadas con el wild-type en torno al motivo, conseguimos alguna buena disposición de la proteína en torno al BTB, pero no así en torno al grupo HEM, YOF y PEO. De hecho obtenemos distancias mínimas entre la proteína y el grupo que no superan los 0.8 5&#x212b;:
 
 <p align="center">
-  <img src="./img/7kqu_356_1_BTB.png" alt="alt text" width="450px" align="middle"/>
-  <img src="./img/7kqu_356_1_HEM.png" alt="alt text" width="450px" align="middle"/>
+  <img src="./img/7kqu_356_1_BTB.png" alt="alt text" width="400px" align="middle"/>
+  <img src="./img/7kqu_356_1_HEM.png" alt="alt text" width="400px" align="middle"/>
 </p>
