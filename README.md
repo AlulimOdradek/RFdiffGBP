@@ -36,7 +36,7 @@ CA = True
 
 myu.motif_substr(pdb,substrateName,chain,distMotif,CA)
 ```
-Para una distancia de 5&#x212b;, tras diversas pruebas solo hemos obtenido resultados satisfactorios para esta distancia, el motivo estaría definido por los residuos [191, 194, 195, 198, 231, 234, 238, 266, 268, 269, 271, 274, 277, 278, 281, 282, 306, 309, 310, 313, 316, 317, 318, 319, 320].
+Para una distancia de &#x212b;, tras diversas pruebas solo hemos obtenido resultados satisfactorios para esta distancia, el motivo estaría definido por los residuos [191, 194, 195, 198, 231, 234, 238, 266, 268, 269, 271, 274, 277, 278, 281, 282, 306, 309, 310, 313, 316, 317, 318, 319, 320].
 
 
 
@@ -85,8 +85,8 @@ En las tres variantes usamos los potenciales:
 - ```monomer_ROG```, que favorece estructuras compactas, es decir, globulares.
 
 A continuación filtramos los resultados obtenidos utilizando la información resumen que nos proporciona la función ```summ_pdbs()```, definida en ```mytools/utils.py```: 
-- ```maxd``` < 65 5&#x212b;: Máxima distancia entre los Cα de los residuos de la enzima. Nos va a dar una idea de la globularidad de la proteína. Para el wild-type tenemos un valor de maxd = 63.70 5&#x212b, por lo que nos parece que un límite de 65 5&#x212b nos puede garantizar hasta cierto punto la globularidad de la enzima.
-- ```rmsd``` < 0.3 5&#x212b;: RMSD (Root Mean Square Deviation) entre el motivo en el wild-type y el mismo motivo en el PDB diseñado, una vez que el segundo se ha superpuesto al primero. Para lograr la superposición se utiliza el algoritmo de Kabsch para calcular la matriz de rotación óptima de RMSD mínimo entre dos conjuntos de puntos pareados.
+- ```maxd``` < 65 &#x212b;: Máxima distancia entre los Cα de los residuos de la enzima. Nos va a dar una idea de la globularidad de la proteína. Para el wild-type tenemos un valor de maxd = 63.70 &#x212b, por lo que nos parece que un límite de 65 &#x212b nos puede garantizar hasta cierto punto la globularidad de la enzima.
+- ```rmsd``` < 0.3 &#x212b;: RMSD (Root Mean Square Deviation) entre el motivo en el wild-type y el mismo motivo en el PDB diseñado, una vez que el segundo se ha superpuesto al primero. Para lograr la superposición se utiliza el algoritmo de Kabsch para calcular la matriz de rotación óptima de RMSD mínimo entre dos conjuntos de puntos pareados.
 
 Obtenemos dos estructuras que cumplen con nuestros requisitos.
 
@@ -216,12 +216,12 @@ Utilizamos el potencial ```olig contacts```e ```inference.simetry=’C2’``` pa
 
 Para definir el motivo hemos usado dos segmentos:
 
-- Seleccionamos los residuos que están a una distancia inferior a 5.0 5&#x212b; del sustrato BTB:  
+- Seleccionamos los residuos que están a una distancia inferior a 5.0 &#x212b; del sustrato BTB:  
   [A81, A85, A148, A149, A151, A152, A232, A233, A234, B81, B85, B148, B151, B152, B232, B233, B234].  
   Las distancias inferiores evaluadas provocaban la superposición de la proteína y el BTB.
-- Y los residuos a una distancia inferior a 3.0 5&#x212b;, 3.5 5&#x212b; y 4.0 5&#x212b; (hemos probado los tres casos) del grupo de reactivos HEM, YOF y PEO. No hemos usado la distancia de 5.05&#x212b; por que incluir´ıa 76 aminoácidos, superior al 10% de residuos de la proteína.
+- Y los residuos a una distancia inferior a 3.0 &#x212b;, 3.5 &#x212b; y 4.0 &#x212b; (hemos probado los tres casos) del grupo de reactivos HEM, YOF y PEO. No hemos usado la distancia de 5.0 &#x212b; por que incluir´ıa 76 aminoácidos, superior al 10% de residuos de la proteína.
 
-Para distancias inferiores a 4.0 5&#x212b; en el segundo segmento, hemos aplicado el comando:
+Para distancias inferiores a 4.0 &#x212b; en el segundo segmento, hemos aplicado el comando:
 ```
 python ./scripts/run_inference.py \
 inference.num_designs=10 \
@@ -236,7 +236,7 @@ inference.input_pdb=../TFM/RFdiffusion/inputs/7kqu.pdb \
 'contigmap.contigs=[75/A81-81/2/A84-85/2/A88-88/6/A95-95/34/A130-130/2/A133-133/7/A141-141/4/A146-146/1/A148-149/1/A151-152/3/A156-159/4/A164-164/7/A172-172/23/A196-196/2/A199-200/2/A203-204/4/A209-212/17/A230-230/1/A232-234/73/0 75/B81-81/2/B84-85/2/B88-88/6/B95-95/34/B130-130/2/B133-133/7/B141-141/4/B146-146/1/B148-149/1/B151-152/3/B156-159/4/B164-164/7/B172-172/23/B196-196/3/B200-200/2/B203-204/4/B209-212/17/B230-230/1/B232-234/73/0]'
 ```
 
-Con esta configuración no obtenemos los resultados que buscábamos: al alinear las infraestructuras diseñadas con el wild-type en torno al motivo, conseguimos alguna buena disposición de la proteína en torno al BTB, pero no así en torno al grupo HEM, YOF y PEO. De hecho obtenemos distancias mínimas entre la proteína y el grupo que no superan los 0.8 5&#x212b;:
+Con esta configuración no obtenemos los resultados que buscábamos: al alinear las infraestructuras diseñadas con el wild-type en torno al motivo, conseguimos alguna buena disposición de la proteína en torno al BTB, pero no así en torno al grupo HEM, YOF y PEO. De hecho obtenemos distancias mínimas entre la proteína y el grupo que no superan los 0.8 &#x212b;:
 
 <p align="center">
   <img src="./img/7kqu_356_1_BTB.png" alt="alt text" width="400px" align="middle"/>
