@@ -244,3 +244,36 @@ Con esta configuración no obtenemos los resultados que buscábamos: al alinear 
 </p>
 
 No es posible aplicar simultáneamente los potenciales ```olig_contacts``` y ```substrate_contacts```. Esta hecho puede ser la causa de que no se generen adecuadamente los bolsillos de los sustratos.
+
+Obtenemos mejores resultados si aplicamos al PDB del wild-type un movimiento de forma que alinee el eje de simetría del dímero con el eje z. Para ello, partiendo del código previo, aplicamos:
+
+```python
+from rfdiffusion.util import writepdb
+
+r_axe = r.as_rotvec() 
+axe = r_axe/np.linalg.norm(r_axe)
+
+# Calculo el CdM de los CA
+CA_xyz = pdb['xyz'][:,1]
+m = np.matrix(CA_xyz).T
+cdm = np.asarray(myu.center(m)[0].T)
+
+# Muevo el CdM al origen: resto cdm a la posición de todos los átomos
+xyz_mm = [pdb['xyz'][k,pdb['mask'][k]] - cdm for k in range(pdb['xyz'].shape[0])]
+
+# Construyo una matriz de rotación tal que lleve el eje de simetría hasta el eje z 
+gm = np.matrix([[axe[1],-axe[0],0],[axe[0]*axe[2],axe[1]*axe[2], -(axe[0]**2 + axe[1]**2)],axe]).T
+gmi = np.linalg.inv(gm)
+
+# Giro todos los átomos de la enzima
+xyz_mm = [np.asarray(xyz_mm[k]*gmi.T) for k in range(pdb['xyz'].shape[0])]
+
+# Llevo esta información al PDB
+pdb_mm = pdb
+for k in range(pdb_mm['xyz'].shape[0]):
+    pdb_mm['xyz'][k,pdb_mm['mask'][k]] = xyz_mm[k]
+
+# Genero un nuevo fichero PDB 
+writepdb("../TFM/7RFdiffusion/inputs/kqu_z1.pdb", torch.from_numpy(pdb_mm['xyz']),  torch.from_numpy(pdb_mm['seq']), 
+         chain_idx = [k for k,_ in pdb_mm['pdb_idx']])
+```
