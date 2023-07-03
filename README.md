@@ -331,5 +331,5 @@ Veamos algún ejemplo:
 
 <p align="center">
   <img src="./img/7kqu_z7_2_BTB.png" alt="alt text" width="400px" align="middle"/>
-  <img src="./img/7kqu_z7_2_HEM.png" alt="alt text" width="400px" align="middle"/>
+  <img src="./img/7kqu_z7_2_HEMg.png" alt="alt text" width="400px" align="middle"/>
 </p>
