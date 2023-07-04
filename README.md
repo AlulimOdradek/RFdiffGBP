@@ -327,9 +327,10 @@ python  ./scripts/run_inference.py \
   'contigmap.contigs=[75/A76-76/2/A79-79/3/A83-83/44/A128-128/7/A136-136/4/A141-141/1/A143-143/2/A146-147/3/A151-153/5/A159-159/7/A167-167/23/A191-191/12/A204-205/19/A225-225/1/A227-228/74/0 75/B377-377/2/B380-380/3/B384-384/44/B429-429/7/B437-437/4/B442-442/1/B444-444/2/B447-448/3/B452-454/5/B460-460/7/B468-468/23/B492-492/12/B505-506/19/B526-526/1/B528-529/74/0]' \
   inference.ckpt_override_path='./models/Base_epoch8_ckpt.pt'
 ```
-En concreto obtenemos 6 estructuras que presentan una distancia mínima entre los átomos del backbone y los átomos del sustrato superior a 1.7 &#x212b;. Por ejemplo, la estructura que representamos a continuación, obtenida de la variante 3 del comando ```run_inference```, presenta un ```mind = 1.84```:
+En concreto obtenemos 6 estructuras que presentan una distancia mínima entre los átomos del backbone y los átomos del sustrato superior a 1.7 &#x212b;. Por ejemplo, la estructura que representamos a continuación, obtenida de la variante 3 del comando ```run_inference```, presenta una ```mind = 1.84```&#x212b;:
 
 <p align="center">
   <img src="./img/7kqu_z7_2_BTB.png" alt="alt text" width="400px" align="middle"/>
   <img src="./img/7kqu_z7_2_HEMg.png" alt="alt text" width="400px" align="middle"/>
 </p>
+
