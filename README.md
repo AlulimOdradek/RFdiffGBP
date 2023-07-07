@@ -8,6 +8,8 @@ Para ello, hemos seguido el siguiente procedimiento:
 - [Medir la calidad de las enzimas generadas](#medir-la-calidad-de-las-enzimas-generadas):
   - [Generar usando *AlphaFold* la estructura de la proteína](#generar-usando-alphafold-la-estructura-de-la-proteína).
   - [Analizar la calidad del *bolsillo* generado en torno al sustrato](#analizar-la-calidad-del-bolsillo-generado-en-torno-al-sustrato).
+ 
+Las carpetas RFdiffusion, ProteinMPNN y AF2 (AlphaFold2) contienen las entradas y salidas de cada uno de los procesos.
     
 En primera instancia definimos y aplicamos el flujo de trabajo al monómero [6VDZ](https://www.rcsb.org/structure/6vdz), para después tratar de extender el procedimiento al díımero [7KQU](https://www.rcsb.org/structure/7kqu). En ambos casos se trata de oxidoreductasas con sustrato un grupo HEMO:
 - [Resultados 6VDZ](#resultados-6vdz)
