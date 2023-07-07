@@ -170,6 +170,8 @@ MTYEEILALVETFDELLRPILRELIEIAKKTGTEAEVLEILLKLYELLKKAEEKGLLAELSLALLLRFLALTGRFAPRLE
 AISCALLLFKKDCADDPSLPEDLAEFQALAVEMLRAMWALRERYAAAPEAVLLHSGFMVLALLATIYIKIIIKQLEKGNIEKAKENLKLLIEVMELCTELLRAEAALAAEVAAADPALAA
 VVAAIRAEMAGLDWPVHKALIENLAKLKEELKKNREKFEEEIKKLEKALAATYAAHPAVCGHF
 ```
+que se corresponde con la estructura  ```AF2/outputs/6vdz/6vdz_M0_5.0A_1_s9_unrelaxed_rank_001_alphafold2_ptm_model_1_seed_000.pdb```.
+
 Esta solución presenta un valor medio de pLDDT de 94.36 y el PDB generado por *AlphaFold2* nos proporciona un bolsillo a priori aceptable, al menos cuando no se utiliza ```amber``` para el refinamiento de la estructura:
 
 <p align="center">
