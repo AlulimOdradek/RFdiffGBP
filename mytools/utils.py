@@ -4,6 +4,7 @@ import numpy as np
 
 # Utilidades definidas en el algoritmo de RFdiffusion
 from rfdiffusion.inference import utils as iu
+import rfdiffusion.chemical as ch
 
 def center(m):
     """
@@ -195,24 +196,25 @@ def read_fa(path, pathw, filew):
     None.
 
     """
+    
+    # Modificar f.startwith
     pathw = os.path.join(pathw, filew)
     files = os.listdir(path)
     with open(pathw, "w") as fw:
         for f in files:
-            if f.startswith('6vdz_'):
-                ff = os.path.join(path, f)
-                if os.path.isfile(ff) and ff.endswith('.fa'):
-                    with open(ff, 'r') as fff:
-                        lines = fff.readlines()
-                        for index, l in enumerate(lines):
-                            if index > 1:
-                                if l[0] != '>':
-                                    fw.write(l)
-                                else:
-                                    sample = l.split(', ')[1]
-                                    eq = sample.find('=')
-                                    sample = int(sample[eq + 1:]) - 1
-                                    fw.write('>' + f[:-3] + '_s' + str(sample) + '\n')                                    
+            ff = os.path.join(path, f)
+            if os.path.isfile(ff) and ff.endswith('.fa'):
+                with open(ff, 'r') as fff:
+                    lines = fff.readlines()
+                    for index, l in enumerate(lines):
+                        if index > 1:
+                            if l[0] != '>':
+                                fw.write(l)
+                            else:
+                                sample = l.split(', ')[1]
+                                eq = sample.find('=')
+                                sample = int(sample[eq + 1:]) - 1
+                                fw.write('>' + f[:-3] + '_s' + str(sample) + '\n')                                    
 
 
 def summ_pdbs(path, idx_origin, idx_target, pdb_target, substrateName):
@@ -274,5 +276,24 @@ def summ_pdbs(path, idx_origin, idx_target, pdb_target, substrateName):
             ident = identity(pdb_target, pdb_diff)
             pdbs[f] = [rmsd, mindCA, mind, md, maxd, plddt_mean, ident]
     return pdbs 
+
+
+def pdb2aanum(pdbFile):
+    resi = dict()
+    with open(pdbFile, 'r') as f:
+        for line in f:
+            if line.startswith("ATOM"): #¿Sólo ATOM?
+                campos = line.split()
+                numRes = campos[5]
+                nameRes = campos[3]
+                chain = campos[4]
+                try:
+                    resi[chain+numRes] = ch.aa2num[nameRes]
+                except KeyError:
+                    None
+                
+    return torch.Tensor([i for i in resi.values()]).to(int)
+
+
 
 
