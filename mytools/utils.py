@@ -177,6 +177,11 @@ def identity(pdb1, pdb2):
     para nuestro caso simple"""
     if pdb1['seq'].size == pdb2['seq'].size:
         return sum(pdb1['seq']==pdb2['seq'])/pdb1['seq'].size
+    elif pdb1['seq'].size > pdb2['seq'].size:
+        return sum(pdb1['seq'][0:pdb2['seq'].size]==pdb2['seq'])/pdb2['seq'].size
+    else:
+        return sum(pdb1['seq']==pdb2['seq'][0:pdb1['seq'].size])/pdb1['seq'].size
+        
 
 def read_fa(path, pathw, filew):
     """
