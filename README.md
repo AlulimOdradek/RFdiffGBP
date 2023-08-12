@@ -395,9 +395,7 @@ python  ./scripts/run_inference.py \
 	'contigmap.contigs=[75/A81-81/2/A84-84/3/A88-88/6/A95-95/34/A130-130/2/A133-133/7/A141-141/4/A146-146/1/A148-149/1/A151-152/3/A156-159/4/A164-164/7/A172-172/23/A196-196/2/A199-200/2/A203-204/4/A209-212/17/A230-230/1/A232-234/73/0 75/B81-81/2/B84-84/3/B88-88/6/B95-95/34/B130-130/2/B133-133/7/B141-141/4/B146-146/1/B148-149/1/B151-152/3/B156-159/4/B164-164/7/B172-172/23/B196-196/2/B199-200/2/B203-204/4/B209-212/17/B230-230/1/B232-234/73/0]' \
 	inference.ckpt_override_path='./models/Base_epoch8_ckpt.pt'
 ```
-
-Al imponer los filtros rmsd < 0.5 y mind > 2.5, más filtro visual, seleccionamos dos: 7kqu_mm_5_8 y 7kqu_mm_7_9
-Obtenemos dos estructuras que presentan una distancia mínima entre los átomos del backbone y los átomos del sustrato superior a 2.5 &#x212b; con ```rmsd```<0.5.
+Obtenemos dos estructuras que presentan una distancia mínima entre los átomos del backbone y los átomos del sustrato superior a 2.5 &#x212b; con ```rmsd```< 0.5.
 
 
 <p align="center">
