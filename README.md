@@ -268,7 +268,7 @@ Con el objeto de preservar la simetría añadimos los residuos B199 y B232
 
 Aplicamos los comandos:
 
-- Vartiante 0:
+- Variante 0:
 ```
 python  ./scripts/run_inference.py \
 	inference.num_designs=10 \
@@ -394,8 +394,11 @@ python  ./scripts/run_inference.py \
 	inference.input_pdb=../TFM/RFdiffusion/inputs/7kqu_mm.pdb \
 	'contigmap.contigs=[75/A81-81/2/A84-84/3/A88-88/6/A95-95/34/A130-130/2/A133-133/7/A141-141/4/A146-146/1/A148-149/1/A151-152/3/A156-159/4/A164-164/7/A172-172/23/A196-196/2/A199-200/2/A203-204/4/A209-212/17/A230-230/1/A232-234/73/0 75/B81-81/2/B84-84/3/B88-88/6/B95-95/34/B130-130/2/B133-133/7/B141-141/4/B146-146/1/B148-149/1/B151-152/3/B156-159/4/B164-164/7/B172-172/23/B196-196/2/B199-200/2/B203-204/4/B209-212/17/B230-230/1/B232-234/73/0]' \
 	inference.ckpt_override_path='./models/Base_epoch8_ckpt.pt'
-``` 
-En concreto obtenemos 6 estructuras que presentan una distancia mínima entre los átomos del backbone y los átomos del sustrato superior a 1.7 &#x212b;. Por ejemplo, la estructura que representamos a continuación, obtenida de la variante 3 del comando ```run_inference```, presenta una ```mind = 1.84```&#x212b;:
+```
+
+Al imponer los filtros rmsd < 0.5 y mind > 2.5, más filtro visual, seleccionamos dos: 7kqu_mm_5_8 y 7kqu_mm_7_9
+Obtenemos dos estructuras que presentan una distancia mínima entre los átomos del backbone y los átomos del sustrato superior a 2.5 &#x212b; con ```rmsd```<0.5.
+
 
 <p align="center">
   <img src="./img/7kqu_z7_2_BTB.png" alt="alt text" width="400px" align="middle"/>
