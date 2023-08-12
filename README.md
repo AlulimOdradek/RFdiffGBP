@@ -259,119 +259,142 @@ with open(file_src,'r') as fs, open(file_dst, 'a') as fd:
             fd.write(l)
 ```
 
-Para definir el motivo hemos usado dos segmentos:
+Definimos el motivo seleccionando los residuos que están a una distancia inferior a 4.0 &#x212b; tanto del sustrato BTB del grupo de reactivos HEM, YOF y PEO, es decir, seleccionamos los residuos: 
 
-- Seleccionamos los residuos que están a una distancia inferior a 5.0 &#x212b; del sustrato BTB:  
-  [A81, A85, A148, A149, A151, A152, A232, A233, A234, B81, B85, B148, B151, B152, B232, B233, B234].  
-  Las distancias inferiores evaluadas provocaban la superposición de la proteína y el BTB.
-- Y los residuos a una distancia inferior a 3.0 &#x212b;, 3.5 &#x212b; y 4.0 &#x212b; (hemos probado los tres casos) del grupo de reactivos HEM, YOF y PEO. No hemos usado la distancia de 5.0 &#x212b; por que incluir´ıa 76 aminoácidos, superior al 10% de residuos de la proteína.
+A81,A84,A88,A95,A130,A133,A141,A146,A148,A149,A151,A152,A156,A157,A158,A159,A164,A172,A196,A199,A200,A203,A204,A209,A210,A211,A212,A230,A232,A233,A234,
+B81,B84,B88,B95,B130,B133,B141,B146,B148,B149,B151,B152,B156,B157,B158,B159,B164,B172,B196,     B200,B203,B204,B209,B210,B211,B212,B230,     B233,B234
 
-Para distancias inferiores a 4.0 &#x212b; en el segundo segmento, hemos aplicado el comando:
+Con el objeto de preservar la simetría añadimos los residuos B199 y B232
+
+Aplicamos los comandos:
+
+- Vartiante 0:
 ```
-python ./scripts/run_inference.py \
-inference.num_designs=10 \
-inference.output_prefix=../TFM/RFdiffusion/outputs/7kqu/7kqu356 \
-inference.symmetry="C2" \
-'potentials.guiding_potentials=["type:olig_contacts,weight_intra:1,weight_inter:0.06"]' \
-potentials.olig_intra_all=True \
-potentials.olig_inter_all=True \
-potentials.guide_scale=2 \
-potentials.guide_decay="quadratic" \
-inference.input_pdb=../TFM/RFdiffusion/inputs/7kqu.pdb \
-'contigmap.contigs=[75/A81-81/2/A84-85/2/A88-88/6/A95-95/34/A130-130/2/A133-133/7/A141-141/4/A146-146/1/A148-149/1/A151-152/3/A156-159/4/A164-164/7/A172-172/23/A196-196/2/A199-200/2/A203-204/4/A209-212/17/A230-230/1/A232-234/73/0 75/B81-81/2/B84-85/2/B88-88/6/B95-95/34/B130-130/2/B133-133/7/B141-141/4/B146-146/1/B148-149/1/B151-152/3/B156-159/4/B164-164/7/B172-172/23/B196-196/3/B200-200/2/B203-204/4/B209-212/17/B230-230/1/B232-234/73/0]'
+python  ./scripts/run_inference.py \
+	inference.num_designs=10 \
+	inference.output_prefix=../TFM/RFdiffusion/outputs/7kqu_mm/7kqu_mm_0 \
+	inference.symmetry="C2" \
+	'potentials.guiding_potentials=["type:olig_contacts,weight_intra:1,weight_inter:0.06"]' \
+	potentials.olig_intra_all=True \
+	potentials.olig_inter_all=True \
+	potentials.guide_scale=2 \
+	potentials.guide_decay="quadratic" \
+	inference.input_pdb=../TFM/RFdiffusion/inputs/7kqu_mm.pdb \
+	'contigmap.contigs=[75/A81-81/2/A84-84/3/A88-88/6/A95-95/34/A130-130/2/A133-133/7/A141-141/4/A146-146/1/A148-149/1/A151-152/3/A156-159/4/A164-164/7/A172-172/23/A196-196/2/A199-200/2/A203-204/4/A209-212/17/A230-230/1/A232-234/73/0 75/B81-81/2/B84-84/3/B88-88/6/B95-95/34/B130-130/2/B133-133/7/B141-141/4/B146-146/1/B148-149/1/B151-152/3/B156-159/4/B164-164/7/B172-172/23/B196-196/2/B199-200/2/B203-204/4/B209-212/17/B230-230/1/B232-234/73/0]' \
+	inference.ckpt_override_path='./models/Base_epoch8_ckpt.pt' 
 ```
-
-Con esta configuración no obtenemos los resultados que buscábamos: al alinear las infraestructuras diseñadas con el wild-type en torno al motivo, conseguimos alguna buena disposición de la proteína en torno al BTB, pero no así en torno al grupo HEM, YOF y PEO. De hecho obtenemos distancias mínimas entre la proteína y el grupo que no superan los 0.8 &#x212b;:
-
-<p align="center">
-  <img src="./img/7kqu_356_1_BTB.png" alt="alt text" width="400px" align="middle"/>
-  <img src="./img/7kqu_356_1_HEM.png" alt="alt text" width="400px" align="middle"/>
-</p>
-
-No es posible aplicar simultáneamente los potenciales ```olig_contacts``` y ```substrate_contacts```. Esta hecho puede ser la causa de que no se generen adecuadamente los bolsillos de los sustratos.
-
-Obtenemos mejores resultados si aplicamos al PDB del wild-type un movimiento de forma que alinee el eje de simetría del dímero con el eje z. Para ello, partiendo del código previo, aplicamos:
-
-```python
-from rfdiffusion.util import writepdb
-
-r_axe = r.as_rotvec() 
-axe = r_axe/np.linalg.norm(r_axe)
-
-# Calculo el CdM de los CA
-CA_xyz = pdb['xyz'][:,1]
-m = np.matrix(CA_xyz).T
-cdm = np.asarray(myu.center(m)[0].T)
-
-# Muevo el CdM al origen: resto cdm a la posición de todos los átomos
-xyz_mm = [pdb['xyz'][k,pdb['mask'][k]] - cdm for k in range(pdb['xyz'].shape[0])]
-
-# Construyo una matriz de rotación tal que lleve el eje de simetría hasta el eje z 
-gm = np.matrix([[axe[1],-axe[0],0],[axe[0]*axe[2],axe[1]*axe[2], -(axe[0]**2 + axe[1]**2)],axe]).T
-gmi = np.linalg.inv(gm)
-
-# Giro todos los átomos de la enzima
-xyz_mm = [np.asarray(xyz_mm[k]*gmi.T) for k in range(pdb['xyz'].shape[0])]
-
-# Llevo esta información al PDB
-pdb_mm = pdb
-for k in range(pdb_mm['xyz'].shape[0]):
-    pdb_mm['xyz'][k,pdb_mm['mask'][k]] = xyz_mm[k]
-
-# Genero un nuevo fichero PDB 
-writepdb("../TFM/7RFdiffusion/inputs/kqu_z1.pdb", torch.from_numpy(pdb_mm['xyz']),  torch.from_numpy(pdb_mm['seq']), 
-         chain_idx = [k for k,_ in pdb_mm['pdb_idx']])
-```
-
-A partir del nuevo PDB generado (```7kqu_z1.pdb```), obtenemos algunos resultados más interesantes utilizando los comandos:
 
 - Variante 1:
 ```
 python  ./scripts/run_inference.py \
-  inference.num_designs=10 \
-  inference.output_prefix=../TFM/RFdiffusion/outputs/7kqu/7kqu_z5 \
-  inference.symmetry="C2" \
-  'potentials.guiding_potentials=["type:olig_contacts,weight_intra:1,weight_inter:0.1"]' \
-  potentials.olig_intra_all=True \
-  potentials.olig_inter_all=True \
-  potentials.guide_scale=2 \
-  potentials.guide_decay="cubic" \
-  inference.input_pdb=../TFM/RFdiffusion/inputs/7kqu_z1.pdb \
-  'contigmap.contigs=[75/A76-76/2/A79-79/3/A83-83/44/A128-128/7/A136-136/4/A141-141/1/A143-143/2/A146-147/3/A151-153/5/A159-159/7/A167-167/23/A191-191/12/A204-205/19/A225-225/1/A227-228/74/0 75/B377-377/2/B380-380/3/B384-384/44/B429-429/7/B437-437/4/B442-442/1/B444-444/2/B447-448/3/B452-454/5/B460-460/7/B468-468/23/B492-492/12/B505-506/19/B526-526/1/B528-529/74/0]' \
-  inference.ckpt_override_path='./models/Base_epoch8_ckpt.pt'
+	inference.num_designs=10 \
+	inference.output_prefix=../TFM/RFdiffusion/outputs/7kqu_mm/7kqu_mm_1 \
+	inference.symmetry="C2" \
+	'potentials.guiding_potentials=["type:olig_contacts,weight_intra:1,weight_inter:0.1"]' \
+	potentials.olig_intra_all=True \
+	potentials.olig_inter_all=True \
+	potentials.guide_scale=2 \
+	potentials.guide_decay="quadratic" \
+	inference.input_pdb=../TFM/RFdiffusion/inputs/7kqu_mm.pdb \
+	'contigmap.contigs=[75/A81-81/2/A84-84/3/A88-88/6/A95-95/34/A130-130/2/A133-133/7/A141-141/4/A146-146/1/A148-149/1/A151-152/3/A156-159/4/A164-164/7/A172-172/23/A196-196/2/A199-200/2/A203-204/4/A209-212/17/A230-230/1/A232-234/73/0 75/B81-81/2/B84-84/3/B88-88/6/B95-95/34/B130-130/2/B133-133/7/B141-141/4/B146-146/1/B148-149/1/B151-152/3/B156-159/4/B164-164/7/B172-172/23/B196-196/2/B199-200/2/B203-204/4/B209-212/17/B230-230/1/B232-234/73/0]' \
+	inference.ckpt_override_path='./models/Base_epoch8_ckpt.pt' 
 ```
 
 - Variante 2:
 ```
 python  ./scripts/run_inference.py \
-  inference.num_designs=10 \
-  inference.output_prefix=../TFM/RFdiffusion/outputs/7kqu/7kqu_z6 \
-  inference.symmetry="C2" \
-  'potentials.guiding_potentials=["type:olig_contacts,weight_intra:1,weight_inter:0.1"]' \
-  potentials.olig_intra_all=True \
-  potentials.olig_inter_all=True \
-  potentials.guide_scale=1 \
-  potentials.guide_decay="cubic" \
-  inference.input_pdb=../TFM/RFdiffusion/inputs/7kqu_z1.pdb \
-  'contigmap.contigs=[75/A76-76/2/A79-79/3/A83-83/44/A128-128/7/A136-136/4/A141-141/1/A143-143/2/A146-147/3/A151-153/5/A159-159/7/A167-167/23/A191-191/12/A204-205/19/A225-225/1/A227-228/74/0 75/B377-377/2/B380-380/3/B384-384/44/B429-429/7/B437-437/4/B442-442/1/B444-444/2/B447-448/3/B452-454/5/B460-460/7/B468-468/23/B492-492/12/B505-506/19/B526-526/1/B528-529/74/0]' \
-  inference.ckpt_override_path='./models/Base_epoch8_ckpt.pt'
+	inference.num_designs=10 \
+	inference.output_prefix=../TFM/RFdiffusion/outputs/7kqu_mm/7kqu_mm_2 \
+	inference.symmetry="C2" \
+	'potentials.guiding_potentials=["type:olig_contacts,weight_intra:1,weight_inter:0.06"]' \
+	potentials.olig_intra_all=True \
+	potentials.olig_inter_all=True \
+	potentials.guide_scale=1 \
+	potentials.guide_decay="quadratic" \
+	inference.input_pdb=../TFM/RFdiffusion/inputs/7kqu_mm.pdb \
+	'contigmap.contigs=[75/A81-81/2/A84-84/3/A88-88/6/A95-95/34/A130-130/2/A133-133/7/A141-141/4/A146-146/1/A148-149/1/A151-152/3/A156-159/4/A164-164/7/A172-172/23/A196-196/2/A199-200/2/A203-204/4/A209-212/17/A230-230/1/A232-234/73/0 75/B81-81/2/B84-84/3/B88-88/6/B95-95/34/B130-130/2/B133-133/7/B141-141/4/B146-146/1/B148-149/1/B151-152/3/B156-159/4/B164-164/7/B172-172/23/B196-196/2/B199-200/2/B203-204/4/B209-212/17/B230-230/1/B232-234/73/0]' \
+	inference.ckpt_override_path='./models/Base_epoch8_ckpt.pt' 
 ```
 
--Variante 3:
+- Variant 3:
 ```
 python  ./scripts/run_inference.py \
-  inference.num_designs=10 \
-  inference.output_prefix=../TFM/RFdiffusion/outputs/7kqu/7kqu_z7 \
-  inference.symmetry="C2" \
-  'potentials.guiding_potentials=["type:olig_contacts,weight_intra:1,weight_inter:0.2"]' \
-  potentials.olig_intra_all=True \
-  potentials.olig_inter_all=True \
-  potentials.guide_scale=2 \
-  potentials.guide_decay="cubic" \
-  inference.input_pdb=../TFM/RFdiffusion/inputs/7kqu_z1.pdb \
-  'contigmap.contigs=[75/A76-76/2/A79-79/3/A83-83/44/A128-128/7/A136-136/4/A141-141/1/A143-143/2/A146-147/3/A151-153/5/A159-159/7/A167-167/23/A191-191/12/A204-205/19/A225-225/1/A227-228/74/0 75/B377-377/2/B380-380/3/B384-384/44/B429-429/7/B437-437/4/B442-442/1/B444-444/2/B447-448/3/B452-454/5/B460-460/7/B468-468/23/B492-492/12/B505-506/19/B526-526/1/B528-529/74/0]' \
-  inference.ckpt_override_path='./models/Base_epoch8_ckpt.pt'
+	inference.num_designs=10 \
+	inference.output_prefix=../TFM/RFdiffusion/outputs/7kqu_mm/7kqu_mm_3 \
+	inference.symmetry="C2" \
+	'potentials.guiding_potentials=["type:olig_contacts,weight_intra:1,weight_inter:0.1"]' \
+	potentials.olig_intra_all=True \
+	potentials.olig_inter_all=True \
+	potentials.guide_scale=1 \
+	potentials.guide_decay="quadratic" \
+	inference.input_pdb=../TFM/RFdiffusion/inputs/7kqu_mm.pdb \
+	'contigmap.contigs=[75/A81-81/2/A84-84/3/A88-88/6/A95-95/34/A130-130/2/A133-133/7/A141-141/4/A146-146/1/A148-149/1/A151-152/3/A156-159/4/A164-164/7/A172-172/23/A196-196/2/A199-200/2/A203-204/4/A209-212/17/A230-230/1/A232-234/73/0 75/B81-81/2/B84-84/3/B88-88/6/B95-95/34/B130-130/2/B133-133/7/B141-141/4/B146-146/1/B148-149/1/B151-152/3/B156-159/4/B164-164/7/B172-172/23/B196-196/2/B199-200/2/B203-204/4/B209-212/17/B230-230/1/B232-234/73/0]' \
+	inference.ckpt_override_path='./models/Base_epoch8_ckpt.pt'
 ```
+
+- Variante 4:
+```
+python  ./scripts/run_inference.py \
+	inference.num_designs=10 \
+	inference.output_prefix=../TFM/RFdiffusion/outputs/7kqu_mm/7kqu_mm_4_r \
+	inference.symmetry="C2" \
+	'potentials.guiding_potentials=["type:olig_contacts,weight_intra:1,weight_inter:0.1"]' \
+	potentials.olig_intra_all=True \
+	potentials.olig_inter_all=True \
+	potentials.guide_scale=2 \
+	potentials.guide_decay="cubic" \
+	inference.input_pdb=../TFM/RFdiffusion/inputs/7kqu_mm.pdb \
+	'contigmap.contigs=[75/A81-81/2/A84-84/3/A88-88/6/A95-95/34/A130-130/2/A133-133/7/A141-141/4/A146-146/1/A148-149/1/A151-152/3/A156-159/4/A164-164/7/A172-172/23/A196-196/2/A199-200/2/A203-204/4/A209-212/17/A230-230/1/A232-234/73/0 75/B81-81/2/B84-84/3/B88-88/6/B95-95/34/B130-130/2/B133-133/7/B141-141/4/B146-146/1/B148-149/1/B151-152/3/B156-159/4/B164-164/7/B172-172/23/B196-196/2/B199-200/2/B203-204/4/B209-212/17/B230-230/1/B232-234/73/0]' \
+	inference.ckpt_override_path='./models/Base_epoch8_ckpt.pt' 
+```
+
+- Variante 5:
+```
+python  ./scripts/run_inference.py \
+	inference.num_designs=10 \
+	inference.output_prefix=../TFM/RFdiffusion/outputs/7kqu_mm/7kqu_mm_5 \
+	inference.symmetry="C2" \
+	'potentials.guiding_potentials=["type:olig_contacts,weight_intra:1,weight_inter:0.1"]' \
+	potentials.olig_intra_all=True \
+	potentials.olig_inter_all=True \
+	potentials.guide_scale=2 \
+	potentials.guide_decay="cubic" \
+	inference.input_pdb=../TFM/RFdiffusion/inputs/7kqu_mm.pdb \
+	'contigmap.contigs=[75/A81-81/2/A84-84/3/A88-88/6/A95-95/34/A130-130/2/A133-133/7/A141-141/4/A146-146/1/A148-149/1/A151-152/3/A156-159/4/A164-164/7/A172-172/23/A196-196/2/A199-200/2/A203-204/4/A209-212/17/A230-230/1/A232-234/73/0 75/B81-81/2/B84-84/3/B88-88/6/B95-95/34/B130-130/2/B133-133/7/B141-141/4/B146-146/1/B148-149/1/B151-152/3/B156-159/4/B164-164/7/B172-172/23/B196-196/2/B199-200/2/B203-204/4/B209-212/17/B230-230/1/B232-234/73/0]' \
+	inference.ckpt_override_path='./models/Base_epoch8_ckpt.pt' 
+``` 
+
+- Variante 6:
+```
+python  ./scripts/run_inference.py \
+	inference.num_designs=10 \
+	inference.output_prefix=../TFM/RFdiffusion/outputs/7kqu_mm/7kqu_mm_6 \
+	inference.symmetry="C2" \
+	'potentials.guiding_potentials=["type:olig_contacts,weight_intra:1,weight_inter:0.06"]' \
+	potentials.olig_intra_all=True \
+	potentials.olig_inter_all=True \
+	potentials.guide_scale=1 \
+	potentials.guide_decay="cubic" \
+	inference.input_pdb=../TFM/RFdiffusion/inputs/7kqu_mm.pdb \
+	'contigmap.contigs=[75/A81-81/2/A84-84/3/A88-88/6/A95-95/34/A130-130/2/A133-133/7/A141-141/4/A146-146/1/A148-149/1/A151-152/3/A156-159/4/A164-164/7/A172-172/23/A196-196/2/A199-200/2/A203-204/4/A209-212/17/A230-230/1/A232-234/73/0 75/B81-81/2/B84-84/3/B88-88/6/B95-95/34/B130-130/2/B133-133/7/B141-141/4/B146-146/1/B148-149/1/B151-152/3/B156-159/4/B164-164/7/B172-172/23/B196-196/2/B199-200/2/B203-204/4/B209-212/17/B230-230/1/B232-234/73/0]' \
+	inference.ckpt_override_path='./models/Base_epoch8_ckpt.pt' 
+```
+
+- Variante 7:
+```
+python  ./scripts/run_inference.py \
+	inference.num_designs=10 \
+	inference.output_prefix=../TFM/RFdiffusion/outputs/7kqu_mm/7kqu_mm_7 \
+	inference.symmetry="C2" \
+	'potentials.guiding_potentials=["type:olig_contacts,weight_intra:1,weight_inter:0.1"]' \
+	potentials.olig_intra_all=True \
+	potentials.olig_inter_all=True \
+	potentials.guide_scale=1 \
+	potentials.guide_decay="cubic" \
+	inference.input_pdb=../TFM/RFdiffusion/inputs/7kqu_mm.pdb \
+	'contigmap.contigs=[75/A81-81/2/A84-84/3/A88-88/6/A95-95/34/A130-130/2/A133-133/7/A141-141/4/A146-146/1/A148-149/1/A151-152/3/A156-159/4/A164-164/7/A172-172/23/A196-196/2/A199-200/2/A203-204/4/A209-212/17/A230-230/1/A232-234/73/0 75/B81-81/2/B84-84/3/B88-88/6/B95-95/34/B130-130/2/B133-133/7/B141-141/4/B146-146/1/B148-149/1/B151-152/3/B156-159/4/B164-164/7/B172-172/23/B196-196/2/B199-200/2/B203-204/4/B209-212/17/B230-230/1/B232-234/73/0]' \
+	inference.ckpt_override_path='./models/Base_epoch8_ckpt.pt'
+``` 
 En concreto obtenemos 6 estructuras que presentan una distancia mínima entre los átomos del backbone y los átomos del sustrato superior a 1.7 &#x212b;. Por ejemplo, la estructura que representamos a continuación, obtenida de la variante 3 del comando ```run_inference```, presenta una ```mind = 1.84```&#x212b;:
 
 <p align="center">
