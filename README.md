@@ -216,7 +216,48 @@ r.magnitude()
 
 Obtenemos un ángulo de giro de $3.1354$ radianes, muy próximo a $\pi$.
 
-Utilizamos el potencial ```olig contacts```e ```inference.simetry=’C2’``` para generar el dímero.
+Pretendemos utilizamor el potencial ```olig contacts```e ```inference.simetry=’C2’``` para generar el dímero, pero el modelo requiere que el eje de simetría esté sobre el eje $z$. Para ello modificamos el PDB para que se ajuste a este requerimiento usando el código:
+
+```python
+CA_xyz = pdb['xyz'][:,1]
+m = np.matrix(CA_xyz).T
+cdm = np.array(myu.center(m)[0].T)[0]
+
+r_axe = r.as_rotvec() 
+axe = r_axe/np.linalg.norm(r_axe)
+
+# Calculo el CdM de los CA
+CA_xyz = pdb['xyz'][:,1]
+m = np.matrix(CA_xyz).T
+cdm = np.array(myu.center(m)[0].T)[0]
+
+# Muevo el CdM al origen: Resto cdm a la posición de todos los átomos
+xyz_mm = [pdb['xyz'][k,pdb['mask'][k]] - cdm for k in range(pdb['xyz'].shape[0])]
+
+xyz_het_mm =[pdb['xyz_het'] - cdm]
+
+# Tengo que hacer la rotación tal que el eje de simetría coincida con el eje z 
+
+gm = np.matrix([[axe[1],-axe[0],0],[axe[0]*axe[2],axe[1]*axe[2], -(axe[0]**2 + axe[1]**2)],axe]).T
+gmi = np.linalg.inv(gm) 
+
+file_src = "../TFM/RFdiffusion/inputs/7kqu.pdb"
+file_dst = "../TFM/RFdiffusion/inputs/7kqu_mm.pdb"
+
+with open(file_src,'r') as fs, open(file_dst, 'a') as fd:
+    for l in fs:
+        if l.startswith('HETATM') or l.startswith('ATOM'):
+            xyz_atm = np.array([l[30:38], l[38:46], l[46:54]],dtype=float)
+            xyz_atm = xyz_atm - cdm
+            xyz_atm = np.array(xyz_atm*gmi.T)
+            xyz_atm = np.round(xyz_atm, 3)
+            xyz_atm = ["%.3f" % k for k in xyz_atm[0]]
+            xyz_atm = ["%8s" % k for k in xyz_atm]
+            l = l[:30]+xyz_atm[0]+xyz_atm[1]+xyz_atm[2]+l[54:]
+            fd.write(l)
+        else:
+            fd.write(l)
+```
 
 Para definir el motivo hemos usado dos segmentos:
 
