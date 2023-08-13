@@ -15,6 +15,8 @@ En primera instancia definimos y aplicamos el flujo de trabajo al monómero [6VD
 - [Resultados 6VDZ](#resultados-6vdz)
 - [Resultados 7KQU](#resultados-7kqu)
 
+# Pipeline 6VDZ
+
 ## Generar el backbone de la nueva enzima.
 Para realizar el trabajo hemos utilizado el modelo de difusión descrito en [RF*diffusion*](https://github.com/RosettaCommons/RFdiffusion), por lo que  que hemos construido un entorno local tal como se describe en el GitHub.
 Sobre este entorno hemos añadido el código ```mytools/utils.py``` y hemos modificado ```rfdiffusion/inference/utils.py```.
@@ -178,7 +180,7 @@ Esta solución presenta un valor medio de pLDDT de 94.36 y el PDB generado por *
   <img src="./img/6vdz_M0_5_0A_1_s9_u_r1_surface.png" alt="alt text" width="700px" align="middle"/>
 </p>
 
-## Resultados 7KQU
+# Pipeline 7KQU
 
 En el cristal se capturaron dos grupos hemo, uno en cada cadena, más dos moléculas de 3-fluorotirosina y dos moléculas de peróxido de oxígeno, además
 de un grupo BTB en torno al cual interact´uan ambas cadenas.
@@ -436,9 +438,11 @@ python ./protein_mpnn_run.py \
 
 ## Calidad de las enzimas generadas
 
-Generamos las estructuras asouciadas a las secuencias obtenidas mediante *inverse folding*. Usamos el comando:
+Generamos las estructuras asociadas a las secuencias obtenidas mediante *inverse folding*. Usamos el comando:
 
 ```colabfold_batch --templates --amber ./AF2/inputs/7kqu/7kqu_mm.fa ./AF2/outputs/7kqu/``` 
+
+
 
 <p align="center">
   <img src="./img/7kqu_z7_2_BTB.png" alt="alt text" width="400px" align="middle"/>
