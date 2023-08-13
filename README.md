@@ -89,7 +89,7 @@ En las tres variantes usamos los potenciales:
 - ```monomer_ROG```, que favorece estructuras compactas, es decir, globulares.
 
 A continuación filtramos los resultados obtenidos utilizando la información resumen que nos proporciona la función ```summ_pdbs()```, definida en ```mytools/utils.py```: 
-- ```maxd``` < 65 &#x212b;: Máxima distancia entre los Cα de los residuos de la enzima. Nos va a dar una idea de la globularidad de la proteína. Para el wild-type tenemos un valor de maxd = 63.70 &#x212b, por lo que nos parece que un límite de 65 &#x212b nos puede garantizar hasta cierto punto la globularidad de la enzima.
+- ```maxd``` < 65 &#x212b;: Máxima distancia entre los Cα de los residuos de la enzima. Nos va a dar una idea de la globularidad de la proteína. Para el wild-type tenemos un valor de maxd = 63.70 &#x212b;, por lo que nos parece que un límite de 65 &#x212b; nos puede garantizar hasta cierto punto la globularidad de la enzima.
 - ```rmsd``` < 0.3 &#x212b;: RMSD (Root Mean Square Deviation) entre el motivo en el wild-type y el mismo motivo en el PDB diseñado, una vez que el segundo se ha superpuesto al primero. Para lograr la superposición se utiliza el algoritmo de Kabsch para calcular la matriz de rotación óptima de RMSD mínimo entre dos conjuntos de puntos pareados.
 
 Obtenemos dos estructuras que cumplen con nuestros requisitos.
@@ -264,7 +264,7 @@ with open(file_src,'r') as fs, open(file_dst, 'a') as fd:
 Definimos el motivo seleccionando los residuos que están a una distancia inferior a 4.0 &#x212b; tanto del sustrato BTB del grupo de reactivos HEM, YOF y PEO, es decir, seleccionamos los residuos: 
 
 A81,A84,A88,A95,A130,A133,A141,A146,A148,A149,A151,A152,A156,A157,A158,A159,A164,A172,A196,A199,A200,A203,A204,A209,A210,A211,A212,A230,A232,A233,A234,
-B81,B84,B88,B95,B130,B133,B141,B146,B148,B149,B151,B152,B156,B157,B158,B159,B164,B172,B196,     B200,B203,B204,B209,B210,B211,B212,B230,     B233,B234
+B81,B84,B88,B95,B130,B133,B141,B146,B148,B149,B151,B152,B156,B157,B158,B159,B164,B172,B196,B200,B203,B204,B209,B210,B211,B212,B230,B233,B234
 
 Con el objeto de preservar la simetría añadimos los residuos B199 y B232
 
@@ -398,7 +398,7 @@ python  ./scripts/run_inference.py \
 	'contigmap.contigs=[75/A81-81/2/A84-84/3/A88-88/6/A95-95/34/A130-130/2/A133-133/7/A141-141/4/A146-146/1/A148-149/1/A151-152/3/A156-159/4/A164-164/7/A172-172/23/A196-196/2/A199-200/2/A203-204/4/A209-212/17/A230-230/1/A232-234/73/0 75/B81-81/2/B84-84/3/B88-88/6/B95-95/34/B130-130/2/B133-133/7/B141-141/4/B146-146/1/B148-149/1/B151-152/3/B156-159/4/B164-164/7/B172-172/23/B196-196/2/B199-200/2/B203-204/4/B209-212/17/B230-230/1/B232-234/73/0]' \
 	inference.ckpt_override_path='./models/Base_epoch8_ckpt.pt'
 ```
-Tras imponer rmsd < 0.5 y mind > 2.5 &#x212b, más filtro visual, seleccionamos dos estructuras, una de la variante 5 y otra de la variante 7, ambas con ```potentials.guide_decay="cubic"```.
+Tras imponer rmsd < 0.5 y mind > 2.5 &#x212b;, más filtro visual, seleccionamos dos estructuras, una de la variante 5 y otra de la variante 7, ambas con ```potentials.guide_decay="cubic"```.
 
 ### inverse folding
 Utilizamos los comandos:
