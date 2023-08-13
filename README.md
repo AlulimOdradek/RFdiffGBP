@@ -266,7 +266,8 @@ B81,B84,B88,B95,B130,B133,B141,B146,B148,B149,B151,B152,B156,B157,B158,B159,B164
 
 Con el objeto de preservar la simetría añadimos los residuos B199 y B232
 
-Aplicamos los comandos:
+### Motif-scaffolding al motivo
+Utilizamos los comandos:
 
 - Variante 0:
 ```
@@ -395,8 +396,49 @@ python  ./scripts/run_inference.py \
 	'contigmap.contigs=[75/A81-81/2/A84-84/3/A88-88/6/A95-95/34/A130-130/2/A133-133/7/A141-141/4/A146-146/1/A148-149/1/A151-152/3/A156-159/4/A164-164/7/A172-172/23/A196-196/2/A199-200/2/A203-204/4/A209-212/17/A230-230/1/A232-234/73/0 75/B81-81/2/B84-84/3/B88-88/6/B95-95/34/B130-130/2/B133-133/7/B141-141/4/B146-146/1/B148-149/1/B151-152/3/B156-159/4/B164-164/7/B172-172/23/B196-196/2/B199-200/2/B203-204/4/B209-212/17/B230-230/1/B232-234/73/0]' \
 	inference.ckpt_override_path='./models/Base_epoch8_ckpt.pt'
 ```
-Obtenemos dos estructuras que presentan una distancia mínima entre los átomos del backbone y los átomos del sustrato superior a 2.5 &#x212b; con ```rmsd```< 0.5.
+Tras imponer rmsd < 0.5 y mind > 2.5 &#x212b, más filtro visual, seleccionamos dos estructuras, una de la variante 5 y otra de la variante 7, ambas con ```potentials.guide_decay="cubic"```.
 
+### inverse folding
+Utilizamos los comandos:
+```
+python ./helper_scripts/parse_multiple_chains.py \
+	--input_path=../TFM/ProteinMPNN/inputs/7kqu_mm \
+	--output_path=../TFM/ProteinMPNN/outputs/7kqu_mm/parsed_pdbs.jsonl
+
+python ./helper_scripts/assign_fixed_chains.py \
+	--input_path=../TFM/ProteinMPNN/outputs/7kqu_mm/parsed_pdbs.jsonl \
+	--output_path=../TFM/ProteinMPNN/outputs/7kqu_mm/assigned_pdbs.jsonl \
+	--chain_list="A B"
+
+python  ./helper_scripts/make_fixed_positions_dict.py \
+	--input_path=../TFM/ProteinMPNN/outputs/7kqu_mm/parsed_pdbs.jsonl \
+	--output_path=../TFM/ProteinMPNN/outputs/7kqu_mm/fixed_pdbs.jsonl \
+	--chain_list "A B" \
+	--position_list "76 79 83 90 125 128 136 141 143 144 146 147 151 152 153 154 159 168 191 194 195 198 199 204 205 206 207 225 227 228 229,76 79 83 90 125 128 136 141 143 144 146 147 151 152 153 154 159 168 191 194 195 198 199 204 205 206 207 225 227 228 229"
+	
+
+python 	./helper_scripts/make_tied_positions_dict.py \
+	--input_path=../TFM/ProteinMPNN/outputs/7kqu_mm/parsed_pdbs.jsonl \
+	--output_path=../TFM/ProteinMPNN/outputs/7kqu_mm/tied_pdbs.jsonl \
+	--homooligomer 1
+	
+python ./protein_mpnn_run.py \
+        --jsonl_path ../TFM/ProteinMPNN/outputs/7kqu_mm/parsed_pdbs.jsonl \
+        --chain_id_jsonl ../TFM/ProteinMPNN/outputs/7kqu_mm/assigned_pdbs.jsonl \
+        --fixed_positions_jsonl ../TFM/ProteinMPNN/outputs/7kqu_mm/fixed_pdbs.jsonl \
+        --tied_positions_jsonl ../TFM/ProteinMPNN/outputs/7kqu_mm/tied_pdbs.jsonl \
+        --out_folder ../TFM/ProteinMPNN/outputs/7kqu_mm/ \
+        --num_seq_per_target 10 \
+        --sampling_temp "0.1" \
+        --seed 1966 \
+        --batch_size 1
+```
+
+## Calidad de las enzimas generadas
+
+Generamos las estructuras asouciadas a las secuencias obtenidas mediante *inverse folding*. Usamos el comando:
+
+```colabfold_batch --templates --amber ./AF2/inputs/7kqu/7kqu_mm.fa ./AF2/outputs/7kqu/``` 
 
 <p align="center">
   <img src="./img/7kqu_z7_2_BTB.png" alt="alt text" width="400px" align="middle"/>
