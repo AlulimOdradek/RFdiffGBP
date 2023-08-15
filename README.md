@@ -438,7 +438,7 @@ python ./protein_mpnn_run.py \
 
 ## Calidad de las enzimas generadas
 
-Generamos, mediante *colabfold* las estructuras asociadas a las secuencias obtenidas mediante *inverse folding*. Usamos el comando:
+Generamos, mediante *colabfold*, las estructuras asociadas a las secuencias obtenidas mediante *inverse folding*. Usamos el comando:
 
 ```colabfold_batch --templates --amber ./AF2/inputs/7kqu/7kqu_mm.fa ./AF2/outputs/7kqu/``` 
 
