@@ -450,9 +450,7 @@ Para esta enzima obtenemos los mejores resultados para a secuencia:
 LLELVRLRREIERLIEEAVRLLVEAFARLRRMREAGAPPAERRAELLRIARRVIELLREALALLDRISLDTLRARWTVWLLSHQISDVAWAAAVLLLAEIRYDGEADPELLAALRELVELHIEALRRTAEAARAYYHEVFRLSMELQFPGFSGTFNFRHAVFNTWARGVARDYAAQLPAVAEAVRRLLATHAAIAAEMVPAGQSLLQRYRPLLPVEFAPEAARAYNNYFALTGLELNRALISNLTEEIAALFAEALKAGFSLEELEMFYLAALEAARRSGIDEATLARLTALLEAQLAAARA:LLELVRLRREIERLIEEAVRLLVEAFARLRRMREAGAPPAERRAELLRIARRVIELLREALALLDRISLDTLRARWTVWLLSHQISDVAWAAAVLLLAEIRYDGEADPELLAALRELVELHIEALRRTAEAARAYYHEVFRLSMELQFPGFSGTFNFRHAVFNTWARGVARDYAAQLPAVAEAVRRLLATHAAIAAEMVPAGQSLLQRYRPLLPVEFAPEAARAYNNYFALTGLELNRALISNLTEEIAALFAEALKAGFSLEELEMFYLAALEAARRSGIDEATLARLTALLEAQLAAARA
 ```
 
-que se corresponde con la estructura AF2/outputs/6vdz/6vdz_M0_5.0A_1_s9_unrelaxed_rank_001_alphafold2_ptm_model_1_seed_000.pdb.
-
-Esta solución presenta un valor medio de pLDDT de 87.13 si utilizamos ```amber``` para el refinamiento de la estructura, y de 85.97 en caso de no usarlo. El PDB generado por AlphaFold2 nos proporciona un bolsillo a priori aceptable, al menos cuando no se utiliza amber:
+Esta solución presenta un valor medio de pLDDT de 87.13 si utilizamos ```amber``` para el refinamiento de la estructura, y de 85.97 en caso de no usarlo. El PDB generado por AlphaFold2 nos proporciona un bolsillo a priori aceptable, al menos cuando no se utiliza amber (AF2/outputs/7kqu_mm/7kqu_mm_5_8_s3_unrelaxed_rank_001_alphafold2_multimer_v3_model_3_seed_000.pdb):
 
 <p align="center">
   <img src="./img/7kqu_mm_5_8_s3_u_r001_BTB.png" alt="alt text" width="400px" align="middle"/>
