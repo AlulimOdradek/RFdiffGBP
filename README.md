@@ -438,14 +438,24 @@ python ./protein_mpnn_run.py \
 
 ## Calidad de las enzimas generadas
 
-Generamos las estructuras asociadas a las secuencias obtenidas mediante *inverse folding*. Usamos el comando:
+Generamos, mediante *colabfold* las estructuras asociadas a las secuencias obtenidas mediante *inverse folding*. Usamos el comando:
 
 ```colabfold_batch --templates --amber ./AF2/inputs/7kqu/7kqu_mm.fa ./AF2/outputs/7kqu/``` 
 
+## Resultados 7KQU
 
+Para esta enzima obtenemos los mejores resultados para a secuencia:
+
+```
+LLELVRLRREIERLIEEAVRLLVEAFARLRRMREAGAPPAERRAELLRIARRVIELLREALALLDRISLDTLRARWTVWLLSHQISDVAWAAAVLLLAEIRYDGEADPELLAALRELVELHIEALRRTAEAARAYYHEVFRLSMELQFPGFSGTFNFRHAVFNTWARGVARDYAAQLPAVAEAVRRLLATHAAIAAEMVPAGQSLLQRYRPLLPVEFAPEAARAYNNYFALTGLELNRALISNLTEEIAALFAEALKAGFSLEELEMFYLAALEAARRSGIDEATLARLTALLEAQLAAARA:LLELVRLRREIERLIEEAVRLLVEAFARLRRMREAGAPPAERRAELLRIARRVIELLREALALLDRISLDTLRARWTVWLLSHQISDVAWAAAVLLLAEIRYDGEADPELLAALRELVELHIEALRRTAEAARAYYHEVFRLSMELQFPGFSGTFNFRHAVFNTWARGVARDYAAQLPAVAEAVRRLLATHAAIAAEMVPAGQSLLQRYRPLLPVEFAPEAARAYNNYFALTGLELNRALISNLTEEIAALFAEALKAGFSLEELEMFYLAALEAARRSGIDEATLARLTALLEAQLAAARA
+```
+
+que se corresponde con la estructura AF2/outputs/6vdz/6vdz_M0_5.0A_1_s9_unrelaxed_rank_001_alphafold2_ptm_model_1_seed_000.pdb.
+
+Esta solución presenta un valor medio de pLDDT de 87.13 si utilizamos ```amber``` para el refinamiento de la estructura, y de 85.97 en caso de no usarlo. El PDB generado por AlphaFold2 nos proporciona un bolsillo a priori aceptable, al menos cuando no se utiliza amber:
 
 <p align="center">
-  <img src="./img/7kqu_z7_2_BTB.png" alt="alt text" width="400px" align="middle"/>
-  <img src="./img/7kqu_z7_2_HEMg.png" alt="alt text" width="400px" align="middle"/>
+  <img src="./img/7kqu_mm_5_8_s3_u_r001_BTB.png" alt="alt text" width="400px" align="middle"/>
+  <img src="./img/7kqu_mm_5_8_s3_u_r001_HEM.png" alt="alt text" width="400px" align="middle"/>
 </p>
 
